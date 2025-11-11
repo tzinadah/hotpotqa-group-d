@@ -1,0 +1,9 @@
+name: hotpotqa-group-d
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.13
+  - pip
+  - pip:
+      - -e .
