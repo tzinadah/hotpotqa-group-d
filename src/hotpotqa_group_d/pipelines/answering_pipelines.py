@@ -29,14 +29,13 @@ def basic_answer(result_path):
         # Progress tracking
         print(f"asnwering {idx + 1}/{len(dev_fullwiki_data)}")
         question = data_point["question"]
-
         answer = prompt_mistral(client, question)
-        qa_pairs.append((question, answer))
+        qa_pairs.append((data_point["_id"], answer))
 
     # Filter out errored results
     successful_pairs = [pair for pair in qa_pairs if pair[1] != ""]
 
-    format_results(qa_pairs, file_path=result_path)
+    format_results(successful_pairs, file_path=result_path)
 
 
 async def async_answer(result_path):
@@ -55,7 +54,8 @@ async def async_answer(result_path):
     tasks = []
     for data_point in dev_fullwiki_data:
         question = data_point["question"]
-        tasks.append(async_prompt_mistral(client, question))
+        question_id = data_point["_id"]
+        tasks.append(async_prompt_mistral(client, question, question_id))
 
     # Run all tasks in parallel
     print("Answering questions in parallel")
