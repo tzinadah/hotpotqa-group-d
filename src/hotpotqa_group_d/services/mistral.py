@@ -48,18 +48,23 @@ def prompt_mistral(client, prompt, model="mistral-small-latest"):
 
     return response.choices[0].message.content
 
-async def async_prompt_mistral(client, prompt, model="mistral-small-latest")
+
+async def async_prompt_mistral(client, prompt, model="mistral-small-latest"):
     """
     Send a prompt to Mistral API and get a response asynchronously
 
     Args:
-        client (obj): Mistral client
+        client (obj): Async Mistral client
         prompt (str): Question to ask, or prompt to send
         model (str): Model to use
 
     Returns:
         str: Model's response
-    """  
-    
-
-
+    """
+    messages = [{"role": "user", "content": prompt}]
+    try:
+        response = await client.chat(model=model, messages=messages)
+        return response.choices[0].message.content
+    except Exception:
+        print(f"An error happened processing prompt: {prompt}")
+        return ""
