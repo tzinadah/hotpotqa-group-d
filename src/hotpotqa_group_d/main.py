@@ -1,7 +1,7 @@
 from hotpotqa_group_d.config import Env
-from hotpotqa_group_d.services import prompt_mistral
+from hotpotqa_group_d.services import parse_data
 
 if __name__ == "__main__":
     env = Env()
-    res = prompt_mistral(env.MISTRAL_KEY, "hi")
-    print(res)
+    dev_fullwiki_data = parse_data()
+    print(dev_fullwiki_data[0:2])
