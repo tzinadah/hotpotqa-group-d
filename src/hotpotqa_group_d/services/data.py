@@ -18,7 +18,7 @@ def parse_data(file_path="data/hotpot_dev_fullwiki_v1.json"):
     return data
 
 
-def format_answers(qa_pairs, file_path):
+def format_results(qa_pairs, file_path):
     """
     Function that takes the questions answer pairs formats
     them and writes them to a result file under the specified path
