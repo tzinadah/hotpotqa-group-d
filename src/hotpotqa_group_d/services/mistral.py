@@ -44,9 +44,13 @@ def prompt_mistral(client, prompt, model="mistral-small-latest"):
     """
 
     messages = [{"role": "user", "content": prompt}]
-    response = client.chat.complete(model=model, messages=messages)
 
-    return response.choices[0].message.content
+    try:
+        response = client.chat.complete(model=model, messages=messages)
+        return response.choices[0].message.content
+    except Exception:
+        print(f"An error happened processing prompt: {prompt}")
+        return ""
 
 
 async def async_prompt_mistral(client, prompt, model="mistral-small-latest"):
