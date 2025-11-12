@@ -1,4 +1,4 @@
-from hotpotqa_group_d.config.env import Env
+from hotpotqa_group_d.config import Env
 
 if __name__ == "__main__":
     env = Env()
