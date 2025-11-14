@@ -1,4 +1,4 @@
-from hotpotqa_group_d.pipelines.answering_pipelines import basic_answer
+from hotpotqa_group_d.pipelines import basic_answer
 
 if __name__ == "__main__":
-    basic_answer("results/baseline.json")
+    basic_answer("50-questions-sample.json", sample_size=50)

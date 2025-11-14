@@ -10,24 +10,29 @@ from hotpotqa_group_d.services import (
 )
 
 
-def basic_answer(result_path):
+def basic_answer(result_path, sample_size=None):
     """
     Simple answers for baseline evaluation
 
     Args:
         result_path (str): File path to write results
+        sample_size (int): Number of samples used for answering
     """
 
     env = Env()
     client = create_client(env.MISTRAL_KEY)
     dev_fullwiki_data = parse_data()
 
+    if sample_size:
+        dev_fullwiki_data = dev_fullwiki_data[0:sample_size]
+        print(f"limited dataset size to: {len(dev_fullwiki_data)}")
+
     # Results
     qa_pairs = list()
 
     for idx, data_point in enumerate(dev_fullwiki_data):
         # Progress tracking
-        print(f"asnwering {idx + 1}/{len(dev_fullwiki_data)}")
+        print(f"answering {idx + 1}/{len(dev_fullwiki_data)}")
         question = data_point["question"]
         answer = prompt_mistral(client, question)
         qa_pairs.append((data_point["_id"], answer))
