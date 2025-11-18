@@ -31,9 +31,12 @@ def format_results(qa_pairs, file_path):
     # Formatted data to be written in the json file
     data = dict()
     data["answer"] = dict()
+    data["sp"] = dict()
 
     for question, answer in qa_pairs:
         data["answer"][question] = answer
+        # Leave supporting facts empty
+        data["sp"][question] = []
 
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(data, file)
