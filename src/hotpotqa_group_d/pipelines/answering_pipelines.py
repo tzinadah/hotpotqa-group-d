@@ -1,7 +1,6 @@
 import asyncio
 
-from hotpotqa_group_d.config import Env
-from hotpotqa_group_d.config.consts import Model
+from hotpotqa_group_d.config import Env, Model
 from hotpotqa_group_d.services import (
     async_prompt_mistral,
     create_client,
