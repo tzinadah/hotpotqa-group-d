@@ -1,5 +1,7 @@
 from mistralai import Mistral
 
+from hotpotqa_group_d.config import Model
+
 
 def create_client(api_key):
     """
@@ -15,7 +17,7 @@ def create_client(api_key):
     return Mistral(api_key)
 
 
-def prompt_mistral(client, prompt, model="mistral-small-latest"):
+def prompt_mistral(client, prompt, model=Model.SMALL):
     """
     Send a prompt to Mistral API and get a response
 

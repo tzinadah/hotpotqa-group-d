@@ -1,6 +1,7 @@
 import asyncio
 
 from hotpotqa_group_d.config import Env
+from hotpotqa_group_d.config.consts import Model
 from hotpotqa_group_d.services import (
     async_prompt_mistral,
     create_client,
@@ -10,12 +11,13 @@ from hotpotqa_group_d.services import (
 )
 
 
-def basic_answer(result_path, sample_size=None):
+def basic_answer(result_path, model=Model.SMALL, sample_size=None):
     """
     Simple answers for baseline evaluation
 
     Args:
         result_path (str): File path to write results
+        model (str) : Name of the model used in the pipeline
         sample_size (int): Number of samples used for answering
     """
 
@@ -34,7 +36,7 @@ def basic_answer(result_path, sample_size=None):
         # Progress tracking
         print(f"answering {idx + 1}/{len(dev_fullwiki_data)}")
         question = data_point["question"]
-        answer = prompt_mistral(client, question)
+        answer = prompt_mistral(client, question, model)
         qa_pairs.append((data_point["_id"], answer))
 
     # Filter out errored results
