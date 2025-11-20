@@ -71,3 +71,39 @@ async def async_answer(result_path):
     successful_pairs = [pair for pair in qa_pairs if pair[1] != ""]
 
     format_results(successful_pairs, file_path="results/baseline_async.json")
+
+
+def templated_answer(result_path, template, model=Model.SMALL, sample_size=None):
+    """
+    Answer
+
+    Args:
+        result_path (str): File path to write results
+        template (Callable[[str], str]): Templating function
+        model (str) : Name of the model used in the pipeline
+        sample_size (int): Number of samples used for answering
+    """
+
+    env = Env()
+    client = create_client(env.MISTRAL_KEY)
+    dev_fullwiki_data = parse_data()
+
+    if sample_size:
+        dev_fullwiki_data = dev_fullwiki_data[0:sample_size]
+        print(f"limited dataset size to: {len(dev_fullwiki_data)}")
+
+    # Results
+    qa_pairs = list()
+
+    for idx, data_point in enumerate(dev_fullwiki_data):
+        # Progress tracking
+        print(f"answering {idx + 1}/{len(dev_fullwiki_data)}")
+        question = data_point["question"]
+        formatted_question = template(question)
+        answer = prompt_mistral(client, formatted_question, model)
+        qa_pairs.append((data_point["_id"], answer))
+
+    # Filter out errored results
+    successful_pairs = [pair for pair in qa_pairs if pair[1] != ""]
+
+    format_results(successful_pairs, file_path=result_path)
