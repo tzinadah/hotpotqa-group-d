@@ -1,4 +1,4 @@
-def basic_prompt_template(prompt):
+def vanilla_template(prompt):
     """
     Return the question with extra simple instruction
 
@@ -10,8 +10,7 @@ def basic_prompt_template(prompt):
     """
 
     formatted_prompt = f"""
-    You are a trivia master and you are playing a current high stake game of trivia. The answer you give 
-    must be correct concise and straight to the point. Do not provide explaination.
+    The answer you give must be correct concise and straight to the point. Do not provide explaination.
     The question is:
     ###
     {prompt}
