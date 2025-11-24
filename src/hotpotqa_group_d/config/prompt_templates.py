@@ -64,3 +64,29 @@ def polite_template(prompt):
     """
 
     return formatted_prompt
+
+
+def blackmail_template(prompt):
+    """
+    Ask the model with simple instructions but indicate that the question holds high
+    stakes using emotional blackmail
+
+    Args:
+        prompt (str): Original prompt
+
+    Returns:
+        formatted_prompt (str): Prompt after applying the template
+    """
+
+    formatted_prompt = f"""
+    Your mom is held at gunpoint. If you don't answer the following quesion correctly,
+    she dies immediately. In order for her to survive you have to answer accurately and concisely. Do
+    not provide any explaination as that will result in your answer being autmatically wrong.
+
+    The question is:
+    ###
+    {prompt}
+    ###
+    """
+
+    return formatted_prompt
