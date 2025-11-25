@@ -10,12 +10,30 @@ def vanilla_template(prompt):
     """
 
     formatted_prompt = f"""
-    The answer you give must be correct concise and straight to the point. Do not provide explaination.
-
     The question is:
     ###
     {prompt}
     ###
+    """
+
+    return formatted_prompt
+
+
+def clear_template(prompt):
+    """
+    Return the prompt alongside a clear instruction to tell the LLM what to do clearly
+
+    Args:
+        prompt (str): Original prompt
+
+    Returns:
+        formatted_prompt (str): Prompt after applying the template
+    """
+
+    formatted_prompt = f"""
+    The answer you give must be correct concise and straight to the point. Do not provide explaination.
+    
+    {vanilla_template(prompt)}
     """
 
     return formatted_prompt
@@ -32,12 +50,11 @@ def expert_template(prompt):
         formatted_prompt (str): Prompt after applying the template
     """
 
-    formatted_prompt = vanilla_template(prompt)
     formatted_prompt = f"""
     You are a trivia master that is really good at ansering random trivia questions. You are practically
     an encyclopedia use all those skills and knowledge to answer the following quesion.
 
-    {formatted_prompt}
+    {vanilla_template(prompt)}
     """
     return formatted_prompt
 
@@ -57,10 +74,7 @@ def polite_template(prompt):
     Could you please answer the following question? 
     Please keep your response correct and concise, with just the answer and no added explanation.
 
-    The question is:
-    ###
-    {prompt}
-    ###
+    {vanilla_template(prompt)}
     """
 
     return formatted_prompt
@@ -83,10 +97,7 @@ def blackmail_template(prompt):
     she dies immediately. In order for her to survive you have to answer accurately and concisely. Do
     not provide any explaination as that will result in your answer being autmatically wrong.
 
-    The question is:
-    ###
-    {prompt}
-    ###
+    {vanilla_template(prompt)}
     """
 
     return formatted_prompt
