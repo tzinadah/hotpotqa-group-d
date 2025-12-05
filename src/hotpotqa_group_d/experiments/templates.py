@@ -9,12 +9,22 @@ This expirement is to test different approaches with templating the prompt
 from hotpotqa_group_d.config import (
     Model,
     blackmail_template,
+    clear_template,
     expert_template,
     polite_template,
 )
 from hotpotqa_group_d.pipelines import templated_answer
 
 if __name__ == "__main__":
+
+    # Clear template
+    templated_answer(
+        "results/clear-prompt.json",
+        template=clear_template,
+        model=Model.MEDIUM,
+        sample_size=100,
+    )
+
     # Expert expirement
     templated_answer(
         "results/expert-prompt.json",

@@ -101,3 +101,24 @@ def blackmail_template(prompt):
     """
 
     return formatted_prompt
+
+
+def reasoning_template(prompt):
+    """
+    Ask the model to revise and "think" about his answer
+
+    Args:
+        prompt (str): Original prompt
+
+    Returns:
+        formatted_prompt (str): Prompt after applying the template
+    """
+
+    formatted_prompt = f"""
+    You are gonna be provided a question. Think in detail about that question. Break it down
+    into steps. Finally, revise your answer to make sure it's consistent.
+
+    {vanilla_template(prompt)}
+    """
+
+    return formatted_prompt
