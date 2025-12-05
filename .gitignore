@@ -8,4 +8,4 @@ data/
 __pycache__/
 
 # Ignore database files
-my_chroma_db/
+chroma_db/
