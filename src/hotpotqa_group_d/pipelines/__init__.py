@@ -1,1 +1,1 @@
-from .answering_pipelines import async_answer, basic_answer
+from .answering_pipelines import async_answer, basic_answer, RAG_answer
