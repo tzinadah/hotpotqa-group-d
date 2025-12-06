@@ -54,7 +54,7 @@ def expert_template(prompt):
     You are a trivia master that is really good at ansering random trivia questions. You are practically
     an encyclopedia use all those skills and knowledge to answer the following quesion.
 
-    {vanilla_template(prompt)}
+    {clear_template(prompt)}
     """
     return formatted_prompt
 
@@ -74,7 +74,7 @@ def polite_template(prompt):
     Could you please answer the following question? 
     Please keep your response correct and concise, with just the answer and no added explanation.
 
-    {vanilla_template(prompt)}
+    {clear_template(prompt)}
     """
 
     return formatted_prompt
@@ -97,7 +97,7 @@ def blackmail_template(prompt):
     she dies immediately. In order for her to survive you have to answer accurately and concisely. Do
     not provide any explaination as that will result in your answer being autmatically wrong.
 
-    {vanilla_template(prompt)}
+    {clear_template(prompt)}
     """
 
     return formatted_prompt
@@ -118,7 +118,32 @@ def reasoning_template(prompt):
     You are gonna be provided a question. Think in detail about that question. Break it down
     into steps. Finally, revise your answer to make sure it's consistent.
 
-    {vanilla_template(prompt)}
+    {clear_template(prompt)}
+    """
+
+    return formatted_prompt
+
+
+def RAG_template(prompt, context):
+    """
+    Format the prompt alongside the retrieved context
+
+    Args:
+        prompt (str): Original prompt
+        context (str): Context of docs
+
+    Returns:
+        formatted_prompt (str): Prompt after applying the template
+    """
+
+    formatted_prompt = f"""
+    You are gonna be provided a context and a question on that context.
+    Use ONLY the context to answer the question if you can't then don't answer.
+    
+    Context:
+    {context}
+
+    {clear_template(prompt)}
     """
 
     return formatted_prompt

@@ -1,6 +1,6 @@
 import asyncio
 
-from hotpotqa_group_d.config import Env, Model
+from hotpotqa_group_d.config import Env, Model, RAG_template
 from hotpotqa_group_d.services import (
     async_prompt_mistral,
     create_client,
@@ -150,14 +150,7 @@ def RAG_answer(
         context = retrieve_docs(question, top_k, embeddings_path)
 
         # RAG prompt
-        prompt = (
-            "You are a question answering assistant.\n"
-            "Use ONLY the following context to answer the question.\n"
-            "If the answer is not contained in the context, say you don't know.\n\n"
-            f"Context:\n{context}\n\n"
-            f"Question: {question}\n"
-            "Answer with the final answer only."
-        )
+        prompt = RAG_template(question, context)
 
         answer = prompt_mistral(chat_client, prompt, model)
         qa_pairs.append((qid, answer))

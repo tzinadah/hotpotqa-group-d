@@ -69,7 +69,7 @@ def embed_data(
                     collection.add(documents=docs, metadatas=metas, ids=ids)
                     break
                 except Exception:
-                    print(f"API Error {i+1} retrying {5-i-1} times")
+                    print(f"API Error {j+1} retrying {5-j-1} times")
 
         print(f"Added batch {i} - {i+len(batch)} ({len(docs)} docs)")
 
