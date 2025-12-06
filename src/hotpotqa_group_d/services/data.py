@@ -1,7 +1,7 @@
 import json
 
 
-def parse_data(file_path="data/hotpot_dev_fullwiki_v1.json"):
+def parse_data(data_path="data/hotpot_dev_fullwiki_v1.json"):
     """
     Function that parses the hotpotqa data and gets the questions out of them
 
@@ -12,7 +12,7 @@ def parse_data(file_path="data/hotpot_dev_fullwiki_v1.json"):
         questions (list[dict]): list representing the hotpotqa data
     """
 
-    with open(file_path, "r", encoding="utf-8") as file:
+    with open(data_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     return data
