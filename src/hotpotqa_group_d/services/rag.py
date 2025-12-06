@@ -105,7 +105,13 @@ def retrieve_docs(query, k=5, embeddings_path="./chroma_db"):
     context_pieces = []
     for i, (doc, meta) in enumerate(zip(docs, metas), start=1):
         title = meta.get("title", "UNKNOWN")
-        context_pieces.append(f"{i}. [Title: {title}] {doc}")
+        # Retry loop
+        for j in range(5):
+            try:
+                context_pieces.append(f"{i}. [Title: {title}] {doc}")
+                break
+            except Exception:
+                print(f"API Error {j+1} retrying {5-j-1} times")
 
     context = "\n".join(context_pieces)
 
