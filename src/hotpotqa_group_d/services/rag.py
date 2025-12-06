@@ -8,7 +8,7 @@ from hotpotqa_group_d.services import parse_data
 
 
 def embed_data(
-    data_path="data/hotpot_dev_fullwiki_v1.json", db_path="./chroma_db", batch_size=10
+    data_path="./data/hotpot_dev_fullwiki_v1.json", db_path="./chroma_db", batch_size=10
 ):
     """
     Service to embed the context paragraphs from dev full wiki
@@ -26,7 +26,7 @@ def embed_data(
     collection = client.get_or_create_collection(
         name="test_collection",
         embedding_function=MistralEmbeddingFunction(
-            model=Model.EMBED, api_key_env_var="MISTRAL_KEY"
+            model=Model.EMBED.value, api_key_env_var="MISTRAL_KEY"
         ),
     )
 
@@ -63,7 +63,14 @@ def embed_data(
                     ids.append(str(uuid.uuid4()))
 
         if docs:
-            collection.add(documents=docs, metadatas=metas, ids=ids)
+            # Retry loop for faulty api responses
+            for j in range(5):
+                try:
+                    collection.add(documents=docs, metadatas=metas, ids=ids)
+                    break
+                except Exception:
+                    print(f"API Error {i+1} retrying {5-i-1} times")
+
         print(f"Added batch {i} - {i+len(batch)} ({len(docs)} docs)")
 
 
@@ -84,7 +91,7 @@ def retrieve_docs(query, k=5, embeddings_path="./chroma_db"):
     collection = chroma_client.get_collection(
         name="test_collection",
         embedding_function=MistralEmbeddingFunction(
-            model=Model.EMBED, api_key_env_var="MISTRAL_KEY"
+            model=Model.EMBED.value, api_key_env_var="MISTRAL_KEY"
         ),
     )
 

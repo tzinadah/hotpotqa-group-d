@@ -5,4 +5,4 @@ class Model(Enum):
     SMALL = "mistral-small-latest"
     MEDIUM = "mistral-medium-latest"
     LARGE = "mistral-large-latest"
-    EMBED = "mistral-embed-latest"
+    EMBED = "mistral-embed"
