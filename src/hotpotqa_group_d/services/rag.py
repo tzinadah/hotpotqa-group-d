@@ -65,3 +65,41 @@ def embed_data(
         if docs:
             collection.add(documents=docs, metadatas=metas, ids=ids)
         print(f"Added batch {i} - {i+len(batch)} ({len(docs)} docs)")
+
+
+def retrieve_docs(query, k=5, embeddings_path="./chroma_db"):
+    """
+    Method to retrieve top relevant docs
+
+    Args:
+        query (str): Text to compare against
+        k (int): Number of top relevant docs to retrieve
+
+    Return:
+        context (str): Context string of top k relevant docs
+    """
+
+    chroma_client = chromadb.PersistentClient(path=embeddings_path)
+
+    collection = chroma_client.get_collection(
+        name="test_collection",
+        embedding_function=MistralEmbeddingFunction(
+            model=Model.EMBED, api_key_env_var="MISTRAL_KEY"
+        ),
+    )
+
+    # Retrieval based on cosine similarity
+    results = collection.query(query_texts=[query], n_results=k)
+
+    docs = results["documents"][0]
+    metas = results["metadatas"][0]
+
+    # Build context block
+    context_pieces = []
+    for i, (doc, meta) in enumerate(zip(docs, metas), start=1):
+        title = meta.get("title", "UNKNOWN")
+        context_pieces.append(f"{i}. [Title: {title}] {doc}")
+
+    context = "\n".join(context_pieces)
+
+    return context

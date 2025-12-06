@@ -1,8 +1,5 @@
 import asyncio
 
-import chromadb
-from chromadb.utils.embedding_functions import MistralEmbeddingFunction
-
 from hotpotqa_group_d.config import Env, Model
 from hotpotqa_group_d.services import (
     async_prompt_mistral,
@@ -10,6 +7,7 @@ from hotpotqa_group_d.services import (
     format_results,
     parse_data,
     prompt_mistral,
+    retrieve_docs,
 )
 
 
@@ -113,13 +111,20 @@ def templated_answer(result_path, template, model=Model.SMALL, sample_size=None)
     format_results(successful_pairs, file_path=result_path)
 
 
-def RAG_answer(result_path, model=Model.SMALL, sample_size=None, top_k=None):
+def RAG_answer(
+    result_path,
+    embeddings_path="./chroma_db",
+    model=Model.SMALL,
+    sample_size=None,
+    top_k=5,
+):
     """
     Generate answers using a Retrieval-Augmented Generation (RAG) pipeline.
 
 
     Args:
         result_path (str): File path to write results
+        embeddings_path (str): File path for embeddings database
         model (str) : Name of the model used in the pipeline
         sample_size (int): Number of samples used for answering
         top_k (int): Number of retrieved context chunks to include in the prompt.
@@ -129,16 +134,6 @@ def RAG_answer(result_path, model=Model.SMALL, sample_size=None, top_k=None):
     env = Env()
     chat_client = create_client(env.MISTRAL_KEY)
     dev_data = parse_data()
-
-    chroma_client = chromadb.PersistentClient(
-        path="./src/hotpotqa_group_d/pipelines/chroma_db"
-    )
-    collection = chroma_client.get_collection(
-        name="test_collection",
-        embedding_function=MistralEmbeddingFunction(
-            model="mistral-embed", api_key_env_var="MISTRAL_KEY"
-        ),
-    )
 
     if sample_size:
         dev_data = dev_data[0:sample_size]
@@ -152,19 +147,7 @@ def RAG_answer(result_path, model=Model.SMALL, sample_size=None, top_k=None):
         qid = dp["_id"]
         question = dp["question"]
 
-        # Retrieval based on cosine similarity
-        results = collection.query(query_texts=[question], n_results=top_k)
-
-        docs = results["documents"][0]
-        metas = results["metadatas"][0]
-
-        # Build context block
-        context_pieces = []
-        for i, (doc, meta) in enumerate(zip(docs, metas), start=1):
-            title = meta.get("title", "UNKNOWN")
-            context_pieces.append(f"{i}. [Title: {title}] {doc}")
-
-        context = "\n".join(context_pieces)
+        context = retrieve_docs(question, top_k, embeddings_path)
 
         # RAG prompt
         prompt = (
