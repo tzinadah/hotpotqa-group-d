@@ -3,3 +3,4 @@ Name: hotpotqa-group-d
 Version: 0.1.0
 Requires-Dist: mistralai
 Requires-Dist: python-dotenv
+Requires-Dist: chromadb
