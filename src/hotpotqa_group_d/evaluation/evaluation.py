@@ -95,6 +95,11 @@ def eval(prediction_file, gold_file):
     with open(gold_file) as f:
         gold = json.load(f)
 
+    # Added this to normalise for sampling
+    if "answer" in prediction:
+        predicted_ids = set(prediction["answer"].keys())
+        gold = [item for item in gold if item["_id"] in predicted_ids]
+
     metrics = {
         "em": 0,
         "f1": 0,

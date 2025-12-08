@@ -140,7 +140,6 @@ def RAG_template(prompt, context):
     formatted_prompt = f"""
     You are gonna be provided a context and a question on that context.
     Use ONLY the context to answer the question. Don't use any prior knowledge.
-    If the context doesn't provide any answers just say no context.
     
     Context:
     {context}

@@ -1,1 +1,1 @@
-{'em': 0.0, 'f1': 0.0004323923038144009, 'prec': 0.00022634845017268732, 'recall': 0.006482964106191656, 'sp_em': 0.0, 'sp_f1': 0.0, 'sp_prec': 0.0, 'sp_recall': 0.0, 'joint_em': 0.0, 'joint_f1': 0.0, 'joint_prec': 0.0, 'joint_recall': 0.0}
+{'em': 0.0, 'f1': 0.032018650097456386, 'prec': 0.016761102735287498, 'recall': 0.48006349206349214, 'sp_em': 0.0, 'sp_f1': 0.0, 'sp_prec': 0.0, 'sp_recall': 0.0, 'joint_em': 0.0, 'joint_f1': 0.0, 'joint_prec': 0.0, 'joint_recall': 0.0}

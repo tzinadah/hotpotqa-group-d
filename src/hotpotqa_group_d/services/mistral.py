@@ -1,3 +1,5 @@
+import time
+
 from mistralai import Mistral
 
 from hotpotqa_group_d.config import Model
@@ -31,14 +33,15 @@ def prompt_mistral(client, prompt, model=Model.SMALL):
     """
 
     messages = [{"role": "user", "content": prompt}]
-    try:
-        response = client.chat.complete(
-            model=model, messages=messages, temperature=0.01
-        )
-        return response.choices[0].message.content
-    except Exception:
-        print(f"An error happened processing prompt: {prompt}")
-        return ""
+    for i in range(5):
+        try:
+            response = client.chat.complete(
+                model=model, messages=messages, temperature=0.01
+            )
+            return response.choices[0].message.content
+        except Exception:
+            print(f"Error prompting mistral API retrying {i+1}/{5-i}")
+            time.sleep(0.5)
 
 
 async def async_prompt_mistral(client, prompt, id, model="mistral-small-latest"):

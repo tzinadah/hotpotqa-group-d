@@ -143,7 +143,7 @@ def RAG_answer(
 
     for idx, dp in enumerate(dev_data):
         print(f"answering {idx + 1}/{len(dev_data)}")
-
+        print(f"ground truth: {dp["answer"]}")
         qid = dp["_id"]
         question = dp["question"]
 
@@ -153,6 +153,7 @@ def RAG_answer(
         prompt = RAG_template(question, context)
 
         answer = prompt_mistral(chat_client, prompt, model)
+        print(f"predicted: {answer}")
         qa_pairs.append((qid, answer))
 
     # Save results in evaluation format
