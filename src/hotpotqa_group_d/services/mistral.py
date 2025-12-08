@@ -33,7 +33,6 @@ def prompt_mistral(client, prompt, model=Model.SMALL):
     messages = [{"role": "user", "content": prompt}]
     try:
         response = client.chat.complete(model=model, messages=messages)
-        print(f"Prompt: \n{prompt}\nAnswer:\n{response.choices[0].message.content}")
         return response.choices[0].message.content
     except Exception:
         print(f"An error happened processing prompt: {prompt}")
