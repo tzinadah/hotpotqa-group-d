@@ -184,7 +184,7 @@ def generate_query_variants_mistral(question: str, n: int = 6, model: str = "mis
     return out[: max(1, n)]
 
 
-def retrieve_docs_fusion(
+def retrieve_docs(
     query: str,
     k: int = 5,
     embeddings_path: str = "./chroma_db",
@@ -232,7 +232,7 @@ def retrieve_docs_fusion(
         docs = results["documents"][0]
         metas = results["metadatas"][0]
 
-        ranked_lists.append([(ids[i], docs[i], metas[i] or {}) for i in range(len(ids))])
+        ranked_lists.append([(ids[i], docs[i], metas[i]) for i in range(len(ids))])
 
     fused = rrf_fuse(ranked_lists, rrf_k=rrf_k, top_k=k)
 
