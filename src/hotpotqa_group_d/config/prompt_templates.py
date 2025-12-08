@@ -132,6 +132,7 @@ def RAG_template(prompt, context, template=clear_template):
     Args:
         prompt (str): Original prompt
         context (str): Context of docs
+        template (Callable[[str], str]): Templating function
 
     Returns:
         formatted_prompt (str): Prompt after applying the template
@@ -145,6 +146,30 @@ def RAG_template(prompt, context, template=clear_template):
     {context}
 
     {template(prompt)}
+    """
+
+    return formatted_prompt
+
+
+def reasoning_template(prompt):
+    """
+    Format the prompt to include instructions to break the question down to steps
+    and make sure its consistent
+
+    Args:
+        prompt (str): Original prompt
+
+    Returns:
+        formatted_prompt (str): Prompt after applying the template
+    """
+
+    formatted_prompt = f"""
+    Break the question down to steps to trace the logic for answering.
+    Look for relevant facts in the context if provided.
+    Revise your answer making sure its as concise as possible with only the answer
+    and no explainations and consistent with the context.
+
+    {clear_template(prompt)}
     """
 
     return formatted_prompt
