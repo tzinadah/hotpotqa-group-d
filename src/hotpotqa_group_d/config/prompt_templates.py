@@ -138,7 +138,7 @@ def RAG_template(prompt, context):
 
     formatted_prompt = f"""
     You are gonna be provided a context and a question on that context.
-    Use ONLY the context to answer the question if you can't then don't answer.
+    Use ONLY the context to answer the question. Don't use any prior knowledge.
     
     Context:
     {context}
