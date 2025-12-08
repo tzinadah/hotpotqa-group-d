@@ -125,7 +125,7 @@ def reasoning_template(prompt):
     return formatted_prompt
 
 
-def RAG_template(prompt, context):
+def RAG_template(prompt, context, template=clear_template):
     """
     Format the prompt alongside the retrieved context
 
@@ -144,7 +144,7 @@ def RAG_template(prompt, context):
     Context:
     {context}
 
-    {clear_template(prompt)}
+    {template(prompt)}
     """
 
     return formatted_prompt

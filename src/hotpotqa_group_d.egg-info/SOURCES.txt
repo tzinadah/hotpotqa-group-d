@@ -9,13 +9,15 @@ src/hotpotqa_group_d/config/consts.py
 src/hotpotqa_group_d/config/env.py
 src/hotpotqa_group_d/config/prompt_templates.py
 src/hotpotqa_group_d/evaluation/evaluation.py
-src/hotpotqa_group_d/experiments/RAG.py
 src/hotpotqa_group_d/experiments/baseline.py
 src/hotpotqa_group_d/experiments/basic_template.py
+src/hotpotqa_group_d/experiments/embedding.py
 src/hotpotqa_group_d/experiments/models.py
+src/hotpotqa_group_d/experiments/quick-test.py
 src/hotpotqa_group_d/experiments/templates.py
 src/hotpotqa_group_d/pipelines/__init__.py
 src/hotpotqa_group_d/pipelines/answering_pipelines.py
 src/hotpotqa_group_d/services/__init__.py
 src/hotpotqa_group_d/services/data.py
 src/hotpotqa_group_d/services/mistral.py
+src/hotpotqa_group_d/services/rag.py

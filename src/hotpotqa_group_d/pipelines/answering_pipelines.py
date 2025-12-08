@@ -1,6 +1,6 @@
 import asyncio
 
-from hotpotqa_group_d.config import Env, Model, RAG_template
+from hotpotqa_group_d.config import Env, Model, RAG_template, clear_template
 from hotpotqa_group_d.services import (
     async_prompt_mistral,
     create_client,
@@ -116,6 +116,7 @@ def RAG_answer(
     embeddings_path="./chroma_db",
     model=Model.SMALL,
     sample_size=None,
+    template=clear_template,
     top_k=5,
 ):
     """
@@ -127,6 +128,7 @@ def RAG_answer(
         embeddings_path (str): File path for embeddings database
         model (str) : Name of the model used in the pipeline
         sample_size (int): Number of samples used for answering
+        template (Callable[[str], str]): Templating function
         top_k (int): Number of retrieved context chunks to include in the prompt.
 
     """
@@ -143,17 +145,15 @@ def RAG_answer(
 
     for idx, dp in enumerate(dev_data):
         print(f"answering {idx + 1}/{len(dev_data)}")
-        print(f"ground truth: {dp["answer"]}")
         qid = dp["_id"]
         question = dp["question"]
 
         context = retrieve_docs(question, top_k, embeddings_path)
 
         # RAG prompt
-        prompt = RAG_template(question, context)
+        prompt = RAG_template(question, context, template)
 
         answer = prompt_mistral(chat_client, prompt, model)
-        print(f"predicted: {answer}")
         qa_pairs.append((qid, answer))
 
     # Save results in evaluation format

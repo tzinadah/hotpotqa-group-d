@@ -4,6 +4,9 @@ data/
 # Ignore env files
 .env
 
+# Python virtual environments
+.venv
+
 # Ignore pycache
 __pycache__/
 

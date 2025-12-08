@@ -9,42 +9,36 @@ This expirement is to test different approaches with templating the prompt
 from hotpotqa_group_d.config import (
     Model,
     blackmail_template,
-    clear_template,
     expert_template,
     polite_template,
 )
-from hotpotqa_group_d.pipelines import templated_answer
+from hotpotqa_group_d.pipelines import RAG_answer
 
 if __name__ == "__main__":
 
-    # Clear template
-    templated_answer(
-        "results/clear-prompt.json",
-        template=clear_template,
-        model=Model.MEDIUM,
-        sample_size=100,
-    )
-
     # Expert expirement
-    templated_answer(
+    RAG_answer(
         "results/expert-prompt.json",
         template=expert_template,
         model=Model.MEDIUM,
         sample_size=100,
+        top_k=30,
     )
 
     # Polite expirement
-    templated_answer(
+    RAG_answer(
         "results/polite-prompt.json",
         template=polite_template,
         model=Model.MEDIUM,
         sample_size=100,
+        top_k=30,
     )
 
     # Blackmail expirement
-    templated_answer(
+    RAG_answer(
         "results/blackmail-prompt.json",
         template=blackmail_template,
         model=Model.MEDIUM,
         sample_size=100,
+        top_k=30,
     )
