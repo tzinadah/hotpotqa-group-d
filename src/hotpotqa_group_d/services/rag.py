@@ -145,7 +145,7 @@ def rrf_fuse(
     return [(doc_id, payload[doc_id][0], payload[doc_id][1], score) for doc_id, score in fused]
 
 
-def generate_query_variants_mistral(question: str, n: int = 6, model: str = "mistral-large-latest") -> List[str]:
+def generate_query_variants_mistral(question: str, n: int = 6, model: str = "mistral-small-latest") -> List[str]:
     """
     Uses Mistral chat completion to create diverse search queries.
     Falls back to just [question] if no API key is set.
