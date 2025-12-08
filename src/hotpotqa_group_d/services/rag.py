@@ -65,6 +65,9 @@ def embed_data(
 
     data = parse_data(data_path)
 
+    # Set to keep track of duplicates
+    processed_docs = set()
+
     # Process data in batches
     for i in range(0, len(data), batch_size):
         batch = data[i : i + batch_size]
@@ -86,14 +89,20 @@ def embed_data(
 
                     title = entry[0]
                     paragraph = entry[1]
-                    text = (
-                        title
-                        + ":"
-                        + " ".join(sentence.strip() for sentence in paragraph)
-                    )
-                    docs.append(text)
-                    metas.append({"title": title})
-                    ids.append(str(uuid.uuid4()))
+                    text = " ".join(sentence.strip() for sentence in paragraph)
+
+                    if title not in processed_docs:
+                        processed_docs.add(title)
+
+                        # Chunk text
+                        chunks = chunk_doc(text, chunk_size=100, overlap=20)
+
+                        for idx, chunk in enumerate(chunks):
+                            docs.append(chunk)
+                            metas.append(
+                                {"title": title, "chunk": f"{ idx + 1 }/{len(chunks)}"}
+                            )
+                            ids.append(str(uuid.uuid4()))
 
         if docs:
             # Retry loop for faulty api responses
