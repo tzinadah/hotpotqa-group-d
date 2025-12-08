@@ -3,9 +3,12 @@ import uuid
 
 import chromadb
 from chromadb.utils.embedding_functions import MistralEmbeddingFunction
-
+import os
+from typing import Dict, Any, List, Tuple
 from hotpotqa_group_d.config import Env, Model
 from hotpotqa_group_d.services import parse_data
+
+from mistralai import Mistral
 
 
 def chunk_doc(text, chunk_size=100, overlap=20):
@@ -119,18 +122,83 @@ def embed_data(
         print(f"Added batch {i} - {i+len(batch)} ({len(docs)} docs)")
 
 
-def retrieve_docs(query, k=5, embeddings_path="./chroma_db"):
+def rrf_fuse(
+    ranked_lists: List[List[Tuple[str, str, Dict[str, Any]]]],
+    rrf_k: int = 60,
+    top_k: int = 5,
+) -> List[Tuple[str, str, Dict[str, Any], float]]:
     """
-    Method to retrieve top relevant docs
-
-    Args:
-        query (str): Text to compare against
-        k (int): Number of top relevant docs to retrieve
-
-    Return:
-        context (str): Context string of top k relevant docs
+    ranked_lists: list of ranked results per query variant:
+      [[(id, doc, meta), (id, doc, meta), ...],  ...]
+    returns: [(id, doc, meta, fused_score), ...] sorted best->worst
     """
+    scores: Dict[str, float] = {}
+    payload: Dict[str, Tuple[str, Dict[str, Any]]] = {}
 
+    for hits in ranked_lists:
+        for rank, (doc_id, doc, meta) in enumerate(hits, start=1):
+            scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (rrf_k + rank)
+            if doc_id not in payload:
+                payload[doc_id] = (doc, meta or {})
+
+    fused = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+    return [(doc_id, payload[doc_id][0], payload[doc_id][1], score) for doc_id, score in fused]
+
+
+def generate_query_variants_mistral(question: str, n: int = 6, model: str = "mistral-large-latest") -> List[str]:
+    """
+    Uses Mistral chat completion to create diverse search queries.
+    Falls back to just [question] if no API key is set.
+    """
+    # Your embedding code uses api_key_env_var="MISTRAL_KEY"
+    # Mistral SDK examples default to MISTRAL_API_KEY, so we accept either.
+    api_key = os.getenv("MISTRAL_API_KEY") or os.getenv("MISTRAL_KEY")
+    if not api_key:
+        return [question]
+
+    client = Mistral(api_key=api_key)
+
+    prompt = (
+        f"Generate {n} diverse search queries to retrieve passages for answering the question.\n"
+        f"Question: {question}\n"
+        "Rules:\n"
+        "- One query per line\n"
+        "- No numbering, no bullets\n"
+        "- Keep each query short (<= 12 words)\n"
+    )
+
+    resp = client.chat.complete(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    text = resp.choices[0].message.content or ""
+    queries = [q.strip() for q in text.splitlines() if q.strip()]
+
+    # ensure original is included + dedupe
+    out = []
+    seen = set()
+    for q in [question] + queries:
+        if q not in seen:
+            seen.add(q)
+            out.append(q)
+    return out[: max(1, n)]
+
+
+def retrieve_docs_fusion(
+    query: str,
+    k: int = 5,
+    embeddings_path: str = "./chroma_db",
+    n_variants: int = 6,
+    per_variant_k: int = 8,
+    rrf_k: int = 60,
+):
+    """
+    RAG-Fusion retrieval:
+    - generate query variants
+    - query chroma per variant
+    - fuse results with RRF
+    - return context string
+    """
     chroma_client = chromadb.PersistentClient(path=embeddings_path)
 
     collection = chroma_client.get_collection(
@@ -140,27 +208,39 @@ def retrieve_docs(query, k=5, embeddings_path="./chroma_db"):
         ),
     )
 
-    # Retry loop
-    for j in range(5):
-        try:
-            # Retrieval based on cosine similarity
-            results = collection.query(query_texts=[query], n_results=k)
-            break
-        except Exception:
-            print(f"API Error {j+1} retrying {5-j-1} times")
-            # Wait a sec for API faults
-            time.sleep(0.5)
+    queries = generate_query_variants_mistral(query, n=n_variants)
 
-    docs = results["documents"][0]
-    metas = results["metadatas"][0]
+    ranked_lists: List[List[Tuple[str, str, Dict[str, Any]]]] = []
+
+    for q in queries:
+        # Retry loop
+        for j in range(5):
+            try:
+                results = collection.query(
+                    query_texts=[q],
+                    n_results=per_variant_k,
+                    include=["documents", "metadatas"],  # ids are always included
+                )
+                break
+            except Exception:
+                print(f"API Error {j+1} retrying {5-j-1} times")
+        else:
+            # if all retries failed, skip this variant
+            continue
+
+        ids = results["ids"][0]
+        docs = results["documents"][0]
+        metas = results["metadatas"][0]
+
+        ranked_lists.append([(ids[i], docs[i], metas[i] or {}) for i in range(len(ids))])
+
+    fused = rrf_fuse(ranked_lists, rrf_k=rrf_k, top_k=k)
 
     # Build context block
     context_pieces = []
-    for i, (doc, meta) in enumerate(zip(docs, metas), start=1):
+    for i, (_id, doc, meta, score) in enumerate(fused, start=1):
         title = meta.get("title", "UNKNOWN")
         chunk_num = meta.get("chunk", "UNKNOWN")
-        context_pieces.append(f"{i}. [Title: {title}] , [Chunk: {chunk_num}], {doc}")
+        context_pieces.append(f"{i}. [Title: {title}] , [Chunk: {chunk_num}], [RRF: {score:.4f}] {doc}")
 
-    context = "\n".join(context_pieces)
-
-    return context
+    return "\n".join(context_pieces)
