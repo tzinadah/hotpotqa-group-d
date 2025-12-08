@@ -13,7 +13,7 @@ if __name__ == "__main__":
         embeddings_path="./chroma_db",
         model=Model.SMALL,
         sample_size=100,
-        top_k=10,
+        top_k=30,
     )
 
     # Medium model
@@ -22,7 +22,7 @@ if __name__ == "__main__":
         embeddings_path="./chroma_db",
         model=Model.MEDIUM,
         sample_size=100,
-        top_k=10,
+        top_k=30,
     )
 
     # Large model
@@ -31,5 +31,5 @@ if __name__ == "__main__":
         embeddings_path="./chroma_db",
         model=Model.LARGE,
         sample_size=100,
-        top_k=10,
+        top_k=30,
     )

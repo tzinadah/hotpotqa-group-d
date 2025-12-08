@@ -1,3 +1,4 @@
+import time
 import uuid
 
 import chromadb
@@ -106,12 +107,14 @@ def embed_data(
 
         if docs:
             # Retry loop for faulty api responses
-            for j in range(5):
+            for j in range(10):
                 try:
                     collection.add(documents=docs, metadatas=metas, ids=ids)
                     break
                 except Exception:
                     print(f"API Error {j+1} retrying {5-j-1} times")
+                    # Wait a sec for API faults
+                    time.sleep(0.5)
 
         print(f"Added batch {i} - {i+len(batch)} ({len(docs)} docs)")
 
@@ -145,6 +148,8 @@ def retrieve_docs(query, k=5, embeddings_path="./chroma_db"):
             break
         except Exception:
             print(f"API Error {j+1} retrying {5-j-1} times")
+            # Wait a sec for API faults
+            time.sleep(0.5)
 
     docs = results["documents"][0]
     metas = results["metadatas"][0]

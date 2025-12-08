@@ -32,6 +32,7 @@ def clear_template(prompt):
 
     formatted_prompt = f"""
     The answer you give must be correct concise and straight to the point. Do not provide explaination.
+    If possible keep the answer as short as possible. Keep the answer as raw text without colors or markdowns.
     
     {vanilla_template(prompt)}
     """
@@ -139,6 +140,7 @@ def RAG_template(prompt, context):
     formatted_prompt = f"""
     You are gonna be provided a context and a question on that context.
     Use ONLY the context to answer the question. Don't use any prior knowledge.
+    If the context doesn't provide any answers just say no context.
     
     Context:
     {context}
