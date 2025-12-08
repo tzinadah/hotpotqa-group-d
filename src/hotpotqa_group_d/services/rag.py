@@ -153,7 +153,8 @@ def retrieve_docs(query, k=5, embeddings_path="./chroma_db"):
     context_pieces = []
     for i, (doc, meta) in enumerate(zip(docs, metas), start=1):
         title = meta.get("title", "UNKNOWN")
-        context_pieces.append(f"{i}. [Title: {title}] {doc}")
+        chunk_num = meta.get("chunk", "UNKNOWN")
+        context_pieces.append(f"{i}. [Title: {title}] , [Chunk: {chunk_num}], {doc}")
 
     context = "\n".join(context_pieces)
 
