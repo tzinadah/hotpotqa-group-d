@@ -6,3 +6,4 @@ class Model(Enum):
     MEDIUM = "mistral-medium-latest"
     LARGE = "mistral-large-latest"
     EMBED = "mistral-embed"
+    REASONING = "magistral-medium-latest"
