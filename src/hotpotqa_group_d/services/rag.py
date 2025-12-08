@@ -7,6 +7,39 @@ from hotpotqa_group_d.config import Env, Model
 from hotpotqa_group_d.services import parse_data
 
 
+def chunk_doc(text, chunk_size=100, overlap=20):
+    """
+    Service to chunk a document to parts with respect to their length
+    and with overlap
+
+    Args:
+        text (str): Document or text to chunk
+        chunk_size (int): Number of maximum words per chunk
+        overlap (int): Number of characters in between chunks
+
+    Returns:
+        chunks (list[str]): List of chunks
+    """
+
+    words = text.split()
+    # Step to iterate over
+    step = chunk_size - overlap
+
+    chunks = list()
+
+    for i in range(0, len(words), step):
+
+        # Get a slice of words that represents the chunk
+        chunk_list = words[i : i + chunk_size]
+
+        # Convert back to string
+        chunk = " ".join(chunk_list)
+
+        chunks.append(chunk)
+
+    return chunks
+
+
 def embed_data(
     data_path="./data/hotpot_dev_fullwiki_v1.json", db_path="./chroma_db", batch_size=10
 ):
