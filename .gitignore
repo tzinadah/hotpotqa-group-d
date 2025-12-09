@@ -12,3 +12,4 @@ __pycache__/
 
 # Ignore database files
 chroma_db/
+bm25.sqlite
