@@ -1,6 +1,6 @@
 import asyncio
 
-from hotpotqa_group_d.config import Env, Model, RAG_template, clear_template
+from hotpotqa_group_d.config import Env, Model, RAG_template, clear_template, reflection_template
 from hotpotqa_group_d.services import (
     async_prompt_mistral,
     create_client,
@@ -152,6 +152,60 @@ def RAG_answer(
 
         # RAG prompt
         prompt = RAG_template(question, context, template)
+
+        answer = prompt_mistral(chat_client, prompt, model)
+        qa_pairs.append((qid, answer))
+
+    # Save results in evaluation format
+    successful = [pair for pair in qa_pairs if pair[1] != ""]
+    format_results(successful, result_path)
+
+
+def RAG_self_reflection_answer(
+    result_path,
+    embeddings_path="./chroma_db",
+    model=Model.SMALL,
+    sample_size=None,
+    template=clear_template,
+    top_k=5,
+):
+    """
+    Generate answers using a Retrieval-Augmented Generation (RAG) pipeline.
+
+
+    Args:
+        result_path (str): File path to write results
+        embeddings_path (str): File path for embeddings database
+        model (str) : Name of the model used in the pipeline
+        sample_size (int): Number of samples used for answering
+        template (Callable[[str], str]): Templating function
+        top_k (int): Number of retrieved context chunks to include in the prompt.
+
+    """
+
+    env = Env()
+    chat_client = create_client(env.MISTRAL_KEY)
+    dev_data = parse_data()
+
+    if sample_size:
+        dev_data = dev_data[0:sample_size]
+        print(f"limited dataset size to: {len(dev_data)}")
+
+    qa_pairs = []
+
+    for idx, dp in enumerate(dev_data):
+        print(f"answering {idx + 1}/{len(dev_data)}")
+        qid = dp["_id"]
+        question = dp["question"]
+
+        context = retrieve_docs(question, top_k, embeddings_path)
+
+        # Self-reflection rerank prompt
+        reflectiom_prompt = reflection_template(question, context)
+        reranked_context = prompt_mistral(chat_client, reflectiom_prompt, model)
+
+        # RAG prompt
+        prompt = RAG_template(question, reranked_context, template)
 
         answer = prompt_mistral(chat_client, prompt, model)
         qa_pairs.append((qid, answer))

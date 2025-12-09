@@ -148,3 +148,24 @@ def RAG_template(prompt, context, template=clear_template):
     """
 
     return formatted_prompt
+
+def reflection_template(question, context):
+    """
+    Ask the model to rerank the context chunks by usefulness for answering the question.
+
+    """
+
+    formatted_prompt = f"""
+    You are given a list of context chunks and a question.
+
+    Your task is to:
+    1. RERANK the context chunks from most useful to least useful for answering the question.
+    2. Return ONLY the reranked context, in the SAME FORMAT as it was given to you (no explanations, no extra text).
+
+    Context:
+    {context}
+
+    Question:
+    {question}
+    """
+    return formatted_prompt
