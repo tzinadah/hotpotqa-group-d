@@ -73,7 +73,7 @@ async def async_answer(result_path):
     # Filter out errored results
     successful_pairs = [pair for pair in qa_pairs if pair[1] != ""]
 
-    format_results(successful_pairs, file_path="results/baseline_async.json")
+    format_results(successful_pairs, file_path="predictions/baseline_async.json")
 
 
 def templated_answer(result_path, template, model=Model.SMALL, sample_size=None):

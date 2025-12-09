@@ -8,7 +8,7 @@ from hotpotqa_group_d.pipelines import RAG_answer
 if __name__ == "__main__":
     # In prompt reasoning
     RAG_answer(
-        "results/in-prompt-reasoning.json",
+        "predictions/in-prompt-reasoning.json",
         model=Model.MEDIUM,
         sample_size=100,
         template=reasoning_template,
@@ -17,5 +17,8 @@ if __name__ == "__main__":
 
     # Reasoning model
     RAG_answer(
-        "results/reasoning-model.json", model=Model.REASONING, sample_size=100, top_k=30
+        "predictions/reasoning-model.json",
+        model=Model.REASONING,
+        sample_size=100,
+        top_k=30,
     )
