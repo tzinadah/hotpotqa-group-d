@@ -2,3 +2,4 @@ mistralai
 python-dotenv
 chromadb
 matplotlib
+numpy

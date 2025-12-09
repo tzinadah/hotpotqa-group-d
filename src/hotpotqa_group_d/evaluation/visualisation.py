@@ -1,5 +1,8 @@
 import json
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 def extract_results(label, file_path):
     """
@@ -22,19 +25,57 @@ def extract_results(label, file_path):
         results["label"] = label
         results["em"] = data["em"]
         results["f1"] = data["f1"]
-        results["precision"] = data["precision"]
+        results["prec"] = data["prec"]
         results["recall"] = data["recall"]
 
         return results
 
 
-def plot_metrics(file_paths):
+def plot_metrics(results, file_path):
     """
     Method to plot resulting metrics from different files into the same plot for comparison
+    Saves plot as pdf
 
     Args:
-        file_paths (list[str]): List of file paths to extract the metrics from
+        results (list[dict]): List of result metrics and their label
+        file_path (str): File path for resulting pdf file
     """
 
+    # Create figure
+    fig, x_axis = plt.subplots(figsize=(10, 6))
 
-print(extract_results("baseline", "results/baseline-results.json"))
+    labels = [result["label"] for result in results]
+    metrics = ["em", "f1", "prec", "recall"]
+
+    # config
+    x_locs = np.arange(len(labels))
+    bar_width = 0.2
+    multiplier = 0
+
+    for metric in metrics:
+
+        # Get all values for metric
+        values = [result[metric] for result in results]
+
+        # Calculate offset
+        offset = multiplier * bar_width
+
+        rects = x_axis.bar(x_locs + offset, values, bar_width, label=metric.upper())
+        multiplier += 1
+
+    x_axis.set_ylabel("Score")
+    x_axis.set_title("Model Results Comparison")
+
+    # Center text under bar cluster
+    x_axis.set_xticks(x_locs + bar_width * 1.5)
+    x_axis.set_xticklabels(labels)
+
+    x_axis.legend(loc="upper-left", ncols=4)
+
+    x_axis.set_ylim(0, 1)
+
+    # Add grid for readability
+    x_axis.grid(axis="y", linestyle="--", alpha=0.7)
+
+    plt.tight_layout()
+    plt.savefig(file_path, format="pdf", bbox_inches="tight")
