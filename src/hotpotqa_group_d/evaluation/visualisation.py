@@ -35,3 +35,6 @@ def plot_metrics(file_paths):
     Args:
         file_paths (list[str]): List of file paths to extract the metrics from
     """
+
+
+print(extract_results("baseline", "results/baseline-results.json"))
