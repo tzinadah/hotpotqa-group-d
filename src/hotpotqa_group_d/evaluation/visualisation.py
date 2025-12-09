@@ -41,6 +41,9 @@ def plot_metrics(results, file_path):
         file_path (str): File path for resulting pdf file
     """
 
+    # Style
+    plt.style.use("petroff10")
+
     # Create figure
     fig, x_axis = plt.subplots(figsize=(10, 6))
 
@@ -49,7 +52,7 @@ def plot_metrics(results, file_path):
 
     # config
     x_locs = np.arange(len(labels))
-    bar_width = 0.2
+    bar_width = 0.1
     multiplier = 0
 
     for metric in metrics:
@@ -70,12 +73,12 @@ def plot_metrics(results, file_path):
     x_axis.set_xticks(x_locs + bar_width * 1.5)
     x_axis.set_xticklabels(labels)
 
-    x_axis.legend(loc="upper-left", ncols=4)
+    x_axis.legend(loc="upper left", ncols=4)
 
     x_axis.set_ylim(0, 1)
 
     # Add grid for readability
-    x_axis.grid(axis="y", linestyle="--", alpha=0.7)
+    x_axis.grid(axis="y", linestyle="--", alpha=0.5)
 
     plt.tight_layout()
     plt.savefig(file_path, format="pdf", bbox_inches="tight")
