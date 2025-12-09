@@ -64,3 +64,36 @@ async def async_prompt_mistral(client, prompt, id, model="mistral-small-latest")
     except Exception as exception:
         print(f"An error happened processing prompt: {prompt}\nError: {exception}")
         return (id, "")
+
+
+def reasoning_prompt_mistral(client, prompt, model=Model.REASONING):
+    """
+    Send a prompt to Mistral API and get a response
+    Designed for reasoning models
+
+    Args:
+        client (obj): Mistral client
+        prompt (str): Question to ask, or prompt to send
+        model (str): Model to use
+
+    Returns:
+        str: Model's response
+    """
+
+    messages = [{"role": "user", "content": prompt}]
+    for i in range(5):
+        try:
+            response = client.chat.complete(
+                model=model, messages=messages, temperature=0.01
+            )
+
+            # Filter out the text from text chunks disregarding the thinking chunks
+            raw_text = ""
+            for chunk in response.choices[0].message.content:
+                if chunk.type == "text":
+                    raw_text += chunk.text
+
+            return raw_text
+        except Exception:
+            print(f"Error prompting mistral API retrying {i+1}/{5-i}")
+            time.sleep(0.5)
