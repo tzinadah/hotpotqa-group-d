@@ -205,9 +205,9 @@ def RAG_self_reflection_answer(
         reranked_context = prompt_mistral(chat_client, reflectiom_prompt, model)
 
         # RAG prompt
-        prompt = RAG_template(question, reranked_context, template)
+        rag_prompt = RAG_template(question, reranked_context, template)
 
-        answer = prompt_mistral(chat_client, prompt, model)
+        answer = prompt_mistral(chat_client, rag_prompt, model)
         qa_pairs.append((qid, answer))
 
     # Save results in evaluation format

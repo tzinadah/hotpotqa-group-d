@@ -12,13 +12,22 @@ from hotpotqa_group_d.config import (
 )
 
 if __name__ == "__main__":
-    # SELF REFLECTION with clear template
+    # SELF REFLECTION with medium model and clear template
+    # RAG_self_reflection_answer(
+    #     "results/medium-model-reflection.json",
+    #     embeddings_path="./chroma_db",
+    #     model=Model.MEDIUM,
+    #     sample_size=100,
+    #     top_k=30,
+    # )
+
     RAG_self_reflection_answer(
-        "results/medium-model-reflection.json",
+        "results/large-model-reflection.json",
         embeddings_path="./chroma_db",
-        model=Model.MEDIUM,
+        model=Model.LARGE,
         sample_size=100,
         top_k=30,
     )
+    
 
  
