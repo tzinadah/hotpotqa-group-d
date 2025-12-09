@@ -94,6 +94,7 @@ def reasoning_prompt_mistral(client, prompt, model=Model.REASONING):
                     raw_text += chunk.text
 
             return raw_text
+
         except Exception:
             print(f"Error prompting mistral API retrying {i+1}/{5-i}")
             time.sleep(0.5)
