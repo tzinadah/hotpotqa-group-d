@@ -9,7 +9,7 @@ from hotpotqa_group_d.pipelines import RAG_answer
 if __name__ == "__main__":
     # Small model
     RAG_answer(
-        "results/small-model.json",
+        "predictions/small-model.json",
         embeddings_path="./chroma_db",
         model=Model.SMALL,
         sample_size=100,
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     # Medium model
     RAG_answer(
-        "results/medium-model.json",
+        "predictions/medium-model.json",
         embeddings_path="./chroma_db",
         model=Model.MEDIUM,
         sample_size=100,
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     # Large model
     RAG_answer(
-        "results/large-model.json",
+        "predictions/large-model.json",
         embeddings_path="./chroma_db",
         model=Model.LARGE,
         sample_size=100,

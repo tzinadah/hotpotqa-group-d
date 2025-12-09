@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     # Expert expirement
     RAG_answer(
-        "results/expert-prompt.json",
+        "predictions/expert-prompt.json",
         template=expert_template,
         model=Model.MEDIUM,
         sample_size=100,
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     # Polite expirement
     RAG_answer(
-        "results/polite-prompt.json",
+        "predictions/polite-prompt.json",
         template=polite_template,
         model=Model.MEDIUM,
         sample_size=100,
@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     # Blackmail expirement
     RAG_answer(
-        "results/blackmail-prompt.json",
+        "predictions/blackmail-prompt.json",
         template=blackmail_template,
         model=Model.MEDIUM,
         sample_size=100,

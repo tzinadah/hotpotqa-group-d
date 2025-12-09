@@ -3,7 +3,7 @@
 # Takes the results name and evaluates it
 
 # Extract the filepath from its name
-FILEPATH="./results/$1.json"
+FILEPATH="./predictions/$1.json"
 
 echo evaluating $FILEPATH
 
