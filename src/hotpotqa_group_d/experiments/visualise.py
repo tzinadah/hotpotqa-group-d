@@ -31,3 +31,9 @@ if __name__ == "__main__":
 
     # Plot RAG comparison
     plot_metrics([baseline_results, medium_rag_results], "plots/rag-comparison.pdf")
+
+    # Plot model differences
+    plot_metrics(
+        [small_rag_results, medium_rag_results, large_rag_results],
+        "plots/model-comparison.pdf",
+    )
