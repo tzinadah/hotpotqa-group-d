@@ -71,10 +71,19 @@ def generate_subqueries(question, n = 6, model = "mistral-small-latest"):
         "- Keep each query short (<= 12 words)\n"
     )
 
-    resp = client.chat.complete(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-    )
+    for j in range(5):
+        try:
+            resp = client.chat.complete(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            )
+            break
+        except Exception:
+            print(f"API Error {j+1} retrying {5-j-1} times")
+        else:
+            # if all retries failed, skip this variant
+            continue
+
     text = resp.choices[0].message.content or ""
     queries = [q.strip() for q in text.splitlines() if q.strip()]
 
