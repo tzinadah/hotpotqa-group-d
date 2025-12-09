@@ -38,6 +38,8 @@ if __name__ == "__main__":
         "plots/model-comparison.pdf",
     )
 
+    medium_rag_results["label"] = "baseline"
+
     # Plot template differences
     plot_metrics(
         [
@@ -47,4 +49,10 @@ if __name__ == "__main__":
             expert_template_results,
         ],
         "plots/template-comparison.pdf",
+    )
+
+    # Plot resoaning differences
+    plot_metrics(
+        [medium_rag_results, prompt_reasoning_results, model_reasoning_results],
+        "plots/reasoning-comparison.pdf",
     )
