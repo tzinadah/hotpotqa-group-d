@@ -37,3 +37,14 @@ if __name__ == "__main__":
         [small_rag_results, medium_rag_results, large_rag_results],
         "plots/model-comparison.pdf",
     )
+
+    # Plot template differences
+    plot_metrics(
+        [
+            medium_rag_results,
+            blackmail_template_results,
+            polite_template_results,
+            expert_template_results,
+        ],
+        "plots/template-comparison.pdf",
+    )
