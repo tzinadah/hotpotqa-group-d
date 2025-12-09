@@ -7,6 +7,7 @@ from hotpotqa_group_d.services import (
     format_results,
     parse_data,
     prompt_mistral,
+    reasoning_prompt_mistral,
     retrieve_docs,
 )
 
@@ -134,7 +135,7 @@ def RAG_answer(
     """
 
     env = Env()
-    chat_client = create_client(env.MISTRAL_KEY)
+    client = create_client(env.MISTRAL_KEY)
     dev_data = parse_data()
 
     if sample_size:
@@ -153,7 +154,14 @@ def RAG_answer(
         # RAG prompt
         prompt = RAG_template(question, context, template)
 
-        answer = prompt_mistral(chat_client, prompt, model)
+        # Use reasoning function for its model
+        answer = None
+
+        if model == Model.REASONING:
+            answer = reasoning_prompt_mistral(client, prompt, model)
+        else:
+            answer = prompt_mistral(client, prompt, model)
+
         qa_pairs.append((qid, answer))
 
     # Save results in evaluation format

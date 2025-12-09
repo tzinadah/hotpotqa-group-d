@@ -17,5 +17,5 @@ if __name__ == "__main__":
 
     # Reasoning model
     RAG_answer(
-        "results/reasoning-model.json", model=Model.REASONING, sample_size=100, top_k=1
+        "results/reasoning-model.json", model=Model.REASONING, sample_size=100, top_k=30
     )
