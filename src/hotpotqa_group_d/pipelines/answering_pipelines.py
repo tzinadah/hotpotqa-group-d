@@ -8,6 +8,7 @@ from hotpotqa_group_d.services import (
     parse_data,
     prompt_mistral,
     retrieve_docs,
+    retrieve_docs_fusion,
 )
 
 
@@ -118,6 +119,7 @@ def RAG_answer(
     sample_size=None,
     template=clear_template,
     top_k=5,
+    rag_method=retrieve_docs,
 ):
     """
     Generate answers using a Retrieval-Augmented Generation (RAG) pipeline.
@@ -130,6 +132,7 @@ def RAG_answer(
         sample_size (int): Number of samples used for answering
         template (Callable[[str], str]): Templating function
         top_k (int): Number of retrieved context chunks to include in the prompt.
+        rag_method (Callabale[[str, int, str], str]): Retrieval method to use for RAG
 
     """
 
@@ -148,7 +151,7 @@ def RAG_answer(
         qid = dp["_id"]
         question = dp["question"]
 
-        context = retrieve_docs(question, top_k, embeddings_path)
+        context = rag_method(question, top_k, embeddings_path)
 
         # RAG prompt
         prompt = RAG_template(question, context, template)

@@ -15,12 +15,12 @@ def rrf_fuse(ranked_lists, rrf_k = 50, top_k = 5):
     reciprocal rank fusion implementation for retrieved documents
 
     args:
-        List of ranked lists of (ids, documents, metadatas)
-        rrf_k: parameter for normalising the scores
-        top_k: number of top documents to return
+        ranked_lists (list): List of ranked lists of (ids, documents, metadatas)
+        rrf_k (int): parameter for normalising the scores
+        top_k (int): number of top documents to return
 
     returns:
-        fused list of (id, document, metadata, score)    
+        fused_list (list): fused list of (id, document, metadata, score)    
     """
 
     scores = {}
@@ -48,12 +48,12 @@ def generate_subqueries(question, n = 6, model = "mistral-small-latest"):
     Generate subqueries for retrieval using Mistral
     
     args:
-        question: the query
-        n: number of subqueries to generate
-        model: mistral model to use
+        question (str): the query
+        n (int): number of subqueries to generate
+        model (str): mistral model to use
 
     returns:
-        list of subqueries
+        output (list): list of subqueries
     """
 
     api_key = os.getenv("MISTRAL_KEY")
@@ -78,13 +78,13 @@ def generate_subqueries(question, n = 6, model = "mistral-small-latest"):
     text = resp.choices[0].message.content or ""
     queries = [q.strip() for q in text.splitlines() if q.strip()]
 
-    out = []
+    output = []
     seen = set()
     for q in [question] + queries:
         if q not in seen:
             seen.add(q)
-            out.append(q)
-    return out[:max(1, n)]
+            output.append(q)
+    return output[:max(1, n)]
 
 
 def retrieve_docs_fusion(
@@ -99,12 +99,12 @@ def retrieve_docs_fusion(
     Retrieval using Misral to generate subqueries and RRF to fuse and rank results
 
     args:
-        query: the main query
-        k: number of top documents to return
-        embeddings_path: path to chroma database
-        n_variants: number of subqueries to generate
-        per_variant_k: number of top documents to retrieve per subquery
-        rrf_k: RRF normalisation parameter
+        query (str): the main query
+        k (int): number of top documents to return
+        embeddings_path (str): path to chroma database
+        n_variants (int): number of subqueries to generate
+        per_variant_k (int): number of top documents to retrieve per subquery
+        rrf_k (int): RRF normalisation parameter
     
     returns:
         list of top k documents as a string
@@ -156,4 +156,4 @@ def retrieve_docs_fusion(
 
     return "\n".join(context_pieces)
 
-print(retrieve_docs_fusion("Capital of the UK", embeddings_path="/home/khaled/VScode/Year 3/NLP_GroupD/hotpotqa-group-d/src/hotpotqa_group_d/pipelines/chroma_db"))
+
