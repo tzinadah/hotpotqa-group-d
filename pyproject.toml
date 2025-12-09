@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hotpotqa-group-d"
 version = "0.1.0"
-dependencies = ["mistralai", "python-dotenv", "chromadb"]
+dependencies = ["mistralai", "python-dotenv", "chromadb", "matplotlib"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

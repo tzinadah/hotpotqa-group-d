@@ -1,3 +1,4 @@
 mistralai
 python-dotenv
 chromadb
+matplotlib
