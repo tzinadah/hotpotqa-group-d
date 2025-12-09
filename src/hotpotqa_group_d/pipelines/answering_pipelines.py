@@ -161,7 +161,7 @@ def RAG_answer(
     format_results(successful, result_path)
 
 
-def RAG_self_reflection_answer(
+def two_step_self_reflection_answer(
     result_path,
     embeddings_path="./chroma_db",
     model=Model.SMALL,
@@ -209,6 +209,55 @@ def RAG_self_reflection_answer(
 
         answer = prompt_mistral(chat_client, rag_prompt, model)
         qa_pairs.append((qid, answer))
+
+    # Save results in evaluation format
+    successful = [pair for pair in qa_pairs if pair[1] != ""]
+    format_results(successful, result_path)
+
+def three_step_self_reflection_answer(
+    result_path,
+    embeddings_path="./chroma_db",
+    model=Model.SMALL,
+    sample_size=None,
+    template=clear_template,
+    top_k=5,
+):
+    """
+    Generate answers using a Retrieval-Augmented Generation (RAG) pipeline
+    with a self-reflection step that uses the initial answer to rerank context.
+    """
+
+    env = Env()
+    chat_client = create_client(env.MISTRAL_KEY)
+    dev_data = parse_data()
+
+    if sample_size:
+        dev_data = dev_data[0:sample_size]
+        print(f"limited dataset size to: {len(dev_data)}")
+
+    qa_pairs = []
+
+    for idx, dp in enumerate(dev_data):
+        print(f"answering {idx + 1}/{len(dev_data)}")
+        qid = dp["_id"]
+        question = dp["question"]
+
+        # Retrieve initial context
+        context = retrieve_docs(question, top_k, embeddings_path)
+
+        # initial answer
+        initial_rag_prompt = RAG_template(question, context, template)
+        initial_answer = prompt_mistral(chat_client, initial_rag_prompt, model)
+
+        # rerank context using question + context + initial answer
+        reflection_prompt = reflection_template(question, context, initial_answer)
+        reranked_context = prompt_mistral(chat_client, reflection_prompt, model)
+
+        # final answer
+        final_rag_prompt = RAG_template(question, reranked_context, template)
+        final_answer = prompt_mistral(chat_client, final_rag_prompt, model)
+
+        qa_pairs.append((qid, final_answer))
 
     # Save results in evaluation format
     successful = [pair for pair in qa_pairs if pair[1] != ""]

@@ -3,7 +3,7 @@ This expiremnt is for self-reflection
 """
 
 from hotpotqa_group_d.config import Model
-from hotpotqa_group_d.pipelines import RAG_self_reflection_answer
+from hotpotqa_group_d.pipelines import two_step_self_reflection_answer, three_step_self_reflection_answer
 from hotpotqa_group_d.config import (
     Model,
     blackmail_template,
@@ -12,16 +12,17 @@ from hotpotqa_group_d.config import (
 )
 
 if __name__ == "__main__":
-    # SELF REFLECTION with medium model and clear template
-    # RAG_self_reflection_answer(
-    #     "results/medium-model-reflection.json",
-    #     embeddings_path="./chroma_db",
-    #     model=Model.MEDIUM,
-    #     sample_size=100,
-    #     top_k=30,
-    # )
+    # Two step self -reflection with medium model
+    two_step_self_reflection_answer(
+        "results/medium-model-reflection.json",
+        embeddings_path="./chroma_db",
+        model=Model.MEDIUM,
+        sample_size=100,
+        top_k=30,
+    )
 
-    RAG_self_reflection_answer(
+    # Two step self -reflection with large model
+    two_step_self_reflection_answer(
         "results/large-model-reflection.json",
         embeddings_path="./chroma_db",
         model=Model.LARGE,
@@ -29,5 +30,13 @@ if __name__ == "__main__":
         top_k=30,
     )
     
+    # Three step self -reflection with medium model
+    three_step_self_reflection_answer(
+        "results/medium-model-reflection2.json",
+        embeddings_path="./chroma_db",
+        model=Model.MEDIUM,
+        sample_size=100,
+        top_k=30,
+    )
 
  
