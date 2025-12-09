@@ -5,3 +5,4 @@ Requires-Dist: mistralai
 Requires-Dist: python-dotenv
 Requires-Dist: chromadb
 Requires-Dist: matplotlib
+Requires-Dist: numpy
