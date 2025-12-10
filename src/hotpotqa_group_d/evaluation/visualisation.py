@@ -100,8 +100,11 @@ def spider_plot(results, file_path):
     metrics = ["em", "f1", "prec", "recall"]
     num_metrics = len(metrics)
 
+    # Offset angles so they don't align with axis
+    offset = np.pi / 4
+
     # Angles for graph
-    angles = np.linspace(0, 2 * np.pi, num_metrics, endpoint=False).tolist()
+    angles = (np.linspace(0, 2 * np.pi, num_metrics, endpoint=False) + offset).tolist()
     angles += angles[:1]  # Add first element at the end to close loop
 
     # Create polar figure
@@ -111,15 +114,15 @@ def spider_plot(results, file_path):
         values = [result[metric] for metric in metrics]
         values += values[:1]  # Add first element at the end to close loop
 
-        x_axis.plot(angles, values, linewidth=2, label=result["label"])
+        x_axis.plot(angles, values, linewidth=1.5, label=result["label"])
 
     # Exclude last entry cause it's dupelicated for loop purposes
     x_axis.set_xticks(angles[:-1])
     x_axis.set_xticklabels(metrics)
     x_axis.set_rlabel_position(0)  # type: ignore
 
-    plt.ylim(0, 1.0)
-    plt.legend(loc="upper right")
+    plt.ylim(0, 0.8)
+    plt.legend(loc="upper right", bbox_to_anchor=(1.4, 1.4))
     plt.title("Model Performance Comparison")
 
     plt.savefig(file_path, format="pdf", bbox_inches="tight")
