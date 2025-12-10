@@ -73,7 +73,7 @@ def plot_metrics(results, file_path):
     x_axis.set_xticks(x_locs + bar_width * 1.5)
     x_axis.set_xticklabels(labels)
 
-    x_axis.legend(loc="upper left", ncols=4)
+    x_axis.legend(loc="upper right", ncols=4)
 
     x_axis.set_ylim(0, 1)
 
@@ -81,4 +81,45 @@ def plot_metrics(results, file_path):
     x_axis.grid(axis="y", linestyle="--", alpha=0.5)
 
     plt.tight_layout()
+    plt.savefig(file_path, format="pdf", bbox_inches="tight")
+
+
+def spider_plot(results, file_path):
+    """
+    Method to plot resulting metrics from different files into a spider plot for comparison
+    Saves plot as pdf
+
+    Args:
+        results (list[dict]): List of result metrics and their label
+        file_path (str): File path for resulting pdf file
+    """
+
+    # Style
+    plt.style.use("petroff10")
+
+    metrics = ["em", "f1", "prec", "recall"]
+    num_metrics = len(metrics)
+
+    # Angles for graph
+    angles = np.linspace(0, 2 * np.pi, num_metrics, endpoint=False).tolist()
+    angles += angles[:1]  # Add first element at the end to close loop
+
+    # Create polar figure
+    fig, x_axis = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+
+    for result in results:
+        values = [result[metric] for metric in metrics]
+        values += values[:1]  # Add first element at the end to close loop
+
+        x_axis.plot(angles, values, linewidth=2, label=result["label"])
+
+    # Exclude last entry cause it's dupelicated for loop purposes
+    x_axis.set_xticks(angles[:-1])
+    x_axis.set_xticklabels(metrics)
+    x_axis.set_rlabel_position(0)  # type: ignore
+
+    plt.ylim(0, 1.0)
+    plt.legend(loc="upper right")
+    plt.title("Model Performance Comparison")
+
     plt.savefig(file_path, format="pdf", bbox_inches="tight")
