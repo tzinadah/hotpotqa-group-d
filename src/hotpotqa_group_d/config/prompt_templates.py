@@ -151,6 +151,7 @@ def RAG_template(prompt, context, template=clear_template):
     return formatted_prompt
 
 
+
 def reasoning_template(prompt):
     """
     Format the prompt to include instructions to break the question down to steps
@@ -170,6 +171,59 @@ def reasoning_template(prompt):
     and no explainations and consistent with the context.
 
     {clear_template(prompt)}
+    """
+
+    return formatted_prompt
+
+
+def two_step_reflection_template(question, context):
+    """
+    Ask the model to rerank the context chunks by usefulness for answering the question.
+
+    """
+
+    formatted_prompt = f"""
+    You are given a list of context chunks and a question.
+
+    Your task is to:
+    1. RERANK the context chunks from most useful to least useful for answering the question.
+    2. Return ONLY the reranked context, in the SAME FORMAT as it was given to you (no explanations, no extra text).
+
+    Context:
+    {context}
+
+    Question:
+    {question}
+    """
+    return formatted_prompt
+
+def three_step_reflection_template(question, context, initial_answer):
+    """
+    Ask the model to rerank the context chunks by usefulness for answering the question and giving it the initial answer.
+    """
+
+    formatted_prompt = f"""
+    You are given:
+    - A question
+    - A list of context chunks
+    - An initial answer generated using this context
+
+    Your task is to:
+    1. Analyze how well the initial answer is supported by the context.
+    2. RERANK the context chunks from most useful to least useful for answering the question
+    and for verifying/improving the initial answer.
+    3. Optionally drop chunks that are clearly irrelevant.
+    4. Return ONLY the reranked context, in the SAME TEXT FORMAT as it was given
+    (no explanations, no extra comments).
+
+    Question:
+    {question}
+
+    Initial answer:
+    {initial_answer}
+
+    Context:
+    {context}
     """
 
     return formatted_prompt
