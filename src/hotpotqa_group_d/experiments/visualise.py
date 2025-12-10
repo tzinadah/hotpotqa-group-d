@@ -38,8 +38,6 @@ if __name__ == "__main__":
         "plots/model-comparison.pdf",
     )
 
-    medium_rag_results["label"] = "baseline"
-
     # Plot template differences
     plot_metrics(
         [
