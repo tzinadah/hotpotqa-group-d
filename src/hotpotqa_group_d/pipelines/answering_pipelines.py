@@ -118,8 +118,7 @@ def RAG_answer(
     model=Model.SMALL,
     sample_size=None,
     template=clear_template,
-    top_k=5,
-    rag_method=retrieve_docs,
+    top_k=5
 ):
     """
     Generate answers using a Retrieval-Augmented Generation (RAG) pipeline.
@@ -132,7 +131,6 @@ def RAG_answer(
         sample_size (int): Number of samples used for answering
         template (Callable[[str], str]): Templating function
         top_k (int): Number of retrieved context chunks to include in the prompt.
-        rag_method (Callabale[[str, int, str], str]): Retrieval method to use for RAG
 
     """
 
@@ -151,7 +149,57 @@ def RAG_answer(
         qid = dp["_id"]
         question = dp["question"]
 
-        context = rag_method(question, top_k, embeddings_path)
+        context = retrieve_docs(question, top_k, embeddings_path)
+
+        # RAG prompt
+        prompt = RAG_template(question, context, template)
+
+        answer = prompt_mistral(chat_client, prompt, model)
+        qa_pairs.append((qid, answer))
+
+    # Save results in evaluation format
+    successful = [pair for pair in qa_pairs if pair[1] != ""]
+    format_results(successful, result_path)
+
+def RAG_answer_fusion(
+    result_path,
+    embeddings_path="./chroma_db",
+    model=Model.SMALL,
+    sample_size=None,
+    template=clear_template,
+    top_k=5,
+    rrf_k=50,
+):
+    """
+    Generate answers using a Retrieval-Augmented Generation (RAG) pipeline.
+
+
+    Args:
+        result_path (str): File path to write results
+        embeddings_path (str): File path for embeddings database
+        model (str) : Name of the model used in the pipeline
+        sample_size (int): Number of samples used for answering
+        template (Callable[[str], str]): Templating function
+        top_k (int): Number of retrieved context chunks to include in the prompt.
+        rrf_k (int): RRF normalisation parameter for retrieval fusion
+    """
+
+    env = Env()
+    chat_client = create_client(env.MISTRAL_KEY)
+    dev_data = parse_data()
+
+    if sample_size:
+        dev_data = dev_data[0:sample_size]
+        print(f"limited dataset size to: {len(dev_data)}")
+
+    qa_pairs = []
+
+    for idx, dp in enumerate(dev_data):
+        print(f"answering {idx + 1}/{len(dev_data)}")
+        qid = dp["_id"]
+        question = dp["question"]
+
+        context = retrieve_docs_fusion(query=question, top_k=top_k, embeddings_path=embeddings_path, rrf_k=rrf_k)
 
         # RAG prompt
         prompt = RAG_template(question, context, template)

@@ -10,7 +10,7 @@ from hotpotqa_group_d.services import parse_data
 from mistralai import Mistral
 from hotpotqa_group_d.services.rag import chunk_doc, embed_data
 
-def rrf_fuse(ranked_lists, rrf_k = 50, top_k = 5):
+def rrf_fuse(ranked_lists, rrf_k = 60, top_k = 5):
     """
     reciprocal rank fusion implementation for retrieved documents
 
@@ -43,7 +43,7 @@ def rrf_fuse(ranked_lists, rrf_k = 50, top_k = 5):
     return fused_list
 
 
-def generate_subqueries(question, n = 6, model = "mistral-small-latest"):
+def generate_subqueries(question, n = 6, model = "mistral-large-latest"):
     """
     Generate subqueries for retrieval using Mistral
     
@@ -98,7 +98,7 @@ def generate_subqueries(question, n = 6, model = "mistral-small-latest"):
 
 def retrieve_docs_fusion(
     query,
-    k = 5,
+    top_k = 5,
     embeddings_path = "./chroma_db",
     n_variants = 6,
     per_variant_k = 8,
@@ -154,7 +154,7 @@ def retrieve_docs_fusion(
 
         ranked_lists.append([(ids[i], docs[i], metas[i]) for i in range(len(ids))])
 
-    fused = rrf_fuse(ranked_lists, rrf_k=rrf_k, top_k=k)
+    fused = rrf_fuse(ranked_lists, rrf_k=rrf_k, top_k=top_k)
 
     # Build context block
     context_pieces = []
