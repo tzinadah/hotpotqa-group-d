@@ -1,5 +1,5 @@
 from hotpotqa_group_d.evaluation import extract_results
-from hotpotqa_group_d.evaluation.visualisation import plot_metrics
+from hotpotqa_group_d.evaluation.visualisation import plot_metrics, spider_plot
 
 if __name__ == "__main__":
 
@@ -53,4 +53,20 @@ if __name__ == "__main__":
     plot_metrics(
         [medium_rag_results, prompt_reasoning_results, model_reasoning_results],
         "plots/reasoning-comparison.pdf",
+    )
+
+    # Plot all models
+    spider_plot(
+        [
+            baseline_results,
+            small_rag_results,
+            medium_rag_results,
+            large_rag_results,
+            blackmail_template_results,
+            polite_template_results,
+            expert_template_results,
+            model_reasoning_results,
+            prompt_reasoning_results,
+        ],
+        "plots/all-models.pdf",
     )
