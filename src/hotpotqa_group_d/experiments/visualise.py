@@ -29,6 +29,17 @@ if __name__ == "__main__":
         "model reasoning", "results/reasoning-model-results.json"
     )
 
+    fusion_results = extract_results(
+        "rag fusion", "results/medium-model-fusion-results.json"
+    )
+
+    two_step_reflection_results = extract_results(
+        "two step reflection", "results/medium-model-reflection-results.json"
+    )
+    three_step_reflection_results = extract_results(
+        "three step reflection", "results/medium-model-reflection2-results.json"
+    )
+
     # Plot RAG comparison
     plot_metrics([baseline_results, medium_rag_results], "plots/rag-comparison.pdf")
 
@@ -55,6 +66,22 @@ if __name__ == "__main__":
         "plots/reasoning-comparison.pdf",
     )
 
+    # Plot rag fusion
+    plot_metrics(
+        [medium_rag_results, fusion_results],
+        "plots/rag-fusion-comparison.pdf",
+    )
+
+    # Plot self reflection
+    plot_metrics(
+        [
+            medium_rag_results,
+            two_step_reflection_results,
+            three_step_reflection_results,
+        ],
+        "plots/self-reflection-comparison.pdf",
+    )
+
     # Plot all models
     spider_plot(
         [
@@ -67,6 +94,9 @@ if __name__ == "__main__":
             expert_template_results,
             model_reasoning_results,
             prompt_reasoning_results,
+            fusion_results,
+            two_step_reflection_results,
+            three_step_reflection_results,
         ],
         "plots/all-models.pdf",
     )
