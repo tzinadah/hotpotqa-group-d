@@ -63,7 +63,7 @@ def generate_subqueries(question, n = 6, model = "mistral-large-latest"):
     client = Mistral(api_key=api_key)
 
     prompt = (
-        f"Generate {n} diverse search subqueries to retrieve passages for answering the question.\n"
+        f"Generate {n} diverse and relevant search subqueries to retrieve passages for answering the question.\n"
         f"Question: {question}\n"
         "Rules:\n"
         "- One query per line\n"
