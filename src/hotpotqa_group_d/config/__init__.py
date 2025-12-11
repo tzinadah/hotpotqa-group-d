@@ -7,6 +7,7 @@ from .prompt_templates import (
     expert_template,
     polite_template,
     reasoning_template,
+    three_step_reflection_template,
+    two_step_reflection_template,
     vanilla_template,
-    reflection_template
 )

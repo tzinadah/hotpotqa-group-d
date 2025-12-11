@@ -1,6 +1,13 @@
 import asyncio
 
-from hotpotqa_group_d.config import Env, Model, RAG_template, clear_template, reflection_template
+from hotpotqa_group_d.config import (
+    Env,
+    Model,
+    RAG_template,
+    clear_template,
+    three_step_reflection_template,
+    two_step_reflection_template,
+)
 from hotpotqa_group_d.services import (
     async_prompt_mistral,
     create_client,
@@ -119,7 +126,7 @@ def RAG_answer(
     model=Model.SMALL,
     sample_size=None,
     template=clear_template,
-    top_k=5
+    top_k=5,
 ):
     """
     Generate answers using a Retrieval-Augmented Generation (RAG) pipeline.
@@ -169,6 +176,7 @@ def RAG_answer(
     successful = [pair for pair in qa_pairs if pair[1] != ""]
     format_results(successful, result_path)
 
+
 def RAG_answer_fusion(
     result_path,
     embeddings_path="./chroma_db",
@@ -207,7 +215,9 @@ def RAG_answer_fusion(
         qid = dp["_id"]
         question = dp["question"]
 
-        context = retrieve_docs_fusion(query=question, top_k=top_k, embeddings_path=embeddings_path, rrf_k=rrf_k)
+        context = retrieve_docs_fusion(
+            query=question, top_k=top_k, embeddings_path=embeddings_path, rrf_k=rrf_k
+        )
 
         # RAG prompt
         prompt = RAG_template(question, context, template)
@@ -260,7 +270,7 @@ def two_step_self_reflection_answer(
         context = retrieve_docs(question, top_k, embeddings_path)
 
         # Self-reflection rerank prompt
-        reflectiom_prompt = reflection_template(question, context)
+        reflectiom_prompt = two_step_reflection_template(question, context)
         reranked_context = prompt_mistral(chat_client, reflectiom_prompt, model)
 
         # RAG prompt
@@ -272,6 +282,7 @@ def two_step_self_reflection_answer(
     # Save results in evaluation format
     successful = [pair for pair in qa_pairs if pair[1] != ""]
     format_results(successful, result_path)
+
 
 def three_step_self_reflection_answer(
     result_path,
@@ -309,7 +320,9 @@ def three_step_self_reflection_answer(
         initial_answer = prompt_mistral(chat_client, initial_rag_prompt, model)
 
         # rerank context using question + context + initial answer
-        reflection_prompt = reflection_template(question, context, initial_answer)
+        reflection_prompt = three_step_reflection_template(
+            question, context, initial_answer
+        )
         reranked_context = prompt_mistral(chat_client, reflection_prompt, model)
 
         # final answer
