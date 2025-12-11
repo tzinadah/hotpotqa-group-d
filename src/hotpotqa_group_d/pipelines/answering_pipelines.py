@@ -334,3 +334,106 @@ def three_step_self_reflection_answer(
     # Save results in evaluation format
     successful = [pair for pair in qa_pairs if pair[1] != ""]
     format_results(successful, result_path)
+
+
+
+def self_reflection_fusion_RAG_answer(
+    result_path,
+    embeddings_path="./chroma_db",
+    model=Model.SMALL,
+    sample_size=None,
+    template=clear_template,
+    top_k=5,
+    rrf_k=50,
+):
+    env = Env()
+    chat_client = create_client(env.MISTRAL_KEY)
+    dev_data = parse_data()
+
+    if sample_size:
+        dev_data = dev_data[0:sample_size]
+        print(f"limited dataset size to: {len(dev_data)}")
+
+    qa_pairs = []
+
+    for idx, dp in enumerate(dev_data):
+        print(f"answering {idx + 1}/{len(dev_data)}")
+        qid = dp["_id"]
+        question = dp["question"]
+
+        # Fused retrieval
+        fused_context = retrieve_docs_fusion(
+            query=question,
+            top_k=top_k,
+            embeddings_path=embeddings_path,
+            rrf_k=rrf_k,
+        )
+
+        # Initial answer from fused context
+        initial_rag_prompt = RAG_template(question, fused_context, template)
+        initial_answer = prompt_mistral(chat_client, initial_rag_prompt, model)
+
+        # 3) Reflection: rerank fusion output
+        reflection_prompt = three_step_reflection_template(
+            question,
+            fused_context,
+            initial_answer,
+        )
+        reranked_context = prompt_mistral(chat_client, reflection_prompt, model)
+
+        # 4) Final answer from reranked context
+        final_rag_prompt = RAG_template(question, reranked_context, template)
+        final_answer = prompt_mistral(chat_client, final_rag_prompt, model)
+
+        qa_pairs.append((qid, final_answer))
+
+    successful = [pair for pair in qa_pairs if pair[1] != ""]
+    format_results(successful, result_path)
+
+
+
+def self_reflection_fusion_RAG_answer2(
+    result_path,
+    embeddings_path="./chroma_db",
+    model=Model.SMALL,
+    sample_size=None,
+    template=clear_template,
+    top_k=5,
+    rrf_k=50,
+):
+    env = Env()
+    chat_client = create_client(env.MISTRAL_KEY)
+    dev_data = parse_data()
+
+    if sample_size:
+        dev_data = dev_data[0:sample_size]
+        print(f"limited dataset size to: {len(dev_data)}")
+
+    qa_pairs = []
+
+    for idx, dp in enumerate(dev_data):
+        print(f"answering {idx + 1}/{len(dev_data)}")
+        qid = dp["_id"]
+        question = dp["question"]
+
+        # Fused retrieval
+        fused_context = retrieve_docs_fusion(
+            query=question,
+            top_k=top_k,
+            embeddings_path=embeddings_path,
+            rrf_k=rrf_k,
+        )
+
+
+        # Reflection: rerank fusion 
+        reflection_prompt = two_step_reflection_template(question, fused_context)
+        reranked_context = prompt_mistral(chat_client, reflection_prompt, model)
+
+        # 4) Final answer from reranked context
+        Rag_prompt = RAG_template(question, reranked_context, template)
+        final_answer = prompt_mistral(chat_client, Rag_prompt, model)
+
+        qa_pairs.append((qid, final_answer))
+
+    successful = [pair for pair in qa_pairs if pair[1] != ""]
+    format_results(successful, result_path)
