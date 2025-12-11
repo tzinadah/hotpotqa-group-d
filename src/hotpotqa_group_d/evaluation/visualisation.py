@@ -88,7 +88,7 @@ def plot_metrics(results, file_path):
 
     x_axis.legend(loc="upper right", ncols=4)
 
-    x_axis.set_ylim(0, 1)
+    x_axis.set_ylim(0, 0.7)
 
     # Add grid for readability
     x_axis.grid(axis="y", linestyle="--", alpha=0.5)

@@ -40,6 +40,8 @@ if __name__ == "__main__":
         "3 step reflection", "results/medium-model-reflection2-results.json"
     )
 
+    mixed_results = extract_results("Combined Methods", "results/medium-model-fusion-two-step-reflection-results.json")
+
     # Plot RAG comparison
     plot_metrics([baseline_results, medium_rag_results], "plots/rag-comparison.pdf")
 
@@ -82,6 +84,16 @@ if __name__ == "__main__":
         "plots/self-reflection-comparison.pdf",
     )
 
+    # Plot mixed methods
+    plot_metrics(
+        [
+            mixed_results,
+            two_step_reflection_results,
+            fusion_results,
+        ],
+        "plots/mixed-comparison.pdf",
+    )
+
     # Plot all models
     spider_plot(
         [
@@ -97,6 +109,9 @@ if __name__ == "__main__":
             fusion_results,
             two_step_reflection_results,
             three_step_reflection_results,
+            mixed_results,
         ],
         "plots/all-models.pdf",
     )
+
+    
