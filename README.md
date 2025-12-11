@@ -59,7 +59,7 @@ The experiments save their predictions in [predictions](predictions/)
 
 # Evaluation
 
-You can run the [evaluation script](scripts/evaluate.sh) using the following format
+You can run the [evaluation script](scripts/evaluate-result.sh) using the following format
 `./scripts/evaluate-result.sh example`
 This script will look for predictions/example.json and produce results/example-results.json
 which included the measure resulting from the HotpotQA evaluation script
