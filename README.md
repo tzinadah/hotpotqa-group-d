@@ -44,7 +44,7 @@ It tries to solve the open-domain HotpotQA datasets using Mistral LLM and some N
 
 # Experiments
 
-Experiments can be found in [experiments](src/hotpotqa-group-d/experiments)
+Experiments can be found in [experiments](src/hotpotqa_group_d/experiments)
 
 You can run them just like any python script using while the conda environment is activated
 `python ./src/hotpotqa_group_d/experiments/example-experiment.py`
@@ -68,4 +68,4 @@ which included the measure resulting from the HotpotQA evaluation script
 
 # Plots
 
-You can find plot in [here](plots/) they are the result of running [visualisation](src/hotpotqa-group-d/experiments/visualise.py)
+You can find plot in [here](plots/) they are the result of running [visualisation](src/hotpotqa_group_d/experiments/visualise.py)
