@@ -3,6 +3,19 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Global changes for readability
+plt.rcParams.update(
+    {
+        "font.size": 16,
+        "axes.titlesize": 14,
+        "axes.labelsize": 13,
+        "xtick.labelsize": 12,
+        "ytick.labelsize": 12,
+        "legend.fontsize": 11,
+        "font.family": "serif",
+    }
+)
+
 
 def extract_results(label, file_path):
     """
@@ -45,7 +58,7 @@ def plot_metrics(results, file_path):
     plt.style.use("petroff10")
 
     # Create figure
-    fig, x_axis = plt.subplots(figsize=(10, 6))
+    fig, x_axis = plt.subplots(figsize=(6, 5))
 
     labels = [result["label"] for result in results]
     metrics = ["em", "f1", "prec", "recall"]
@@ -108,21 +121,21 @@ def spider_plot(results, file_path):
     angles += angles[:1]  # Add first element at the end to close loop
 
     # Create polar figure
-    fig, x_axis = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    fig, x_axis = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
 
     for result in results:
         values = [result[metric] for metric in metrics]
         values += values[:1]  # Add first element at the end to close loop
 
-        x_axis.plot(angles, values, linewidth=1.5, label=result["label"])
+        x_axis.plot(angles, values, linewidth=2, label=result["label"])
 
     # Exclude last entry cause it's dupelicated for loop purposes
     x_axis.set_xticks(angles[:-1])
-    x_axis.set_xticklabels(metrics)
+    x_axis.set_xticklabels(metrics, fontsize=24)
     x_axis.set_rlabel_position(0)  # type: ignore
 
-    plt.ylim(0, 0.8)
-    plt.legend(loc="upper right", bbox_to_anchor=(1.4, 1.4))
-    plt.title("Model Performance Comparison")
+    plt.ylim(0, 0.7)
+    plt.legend(loc="upper right", bbox_to_anchor=(1.4, 1.4), fontsize=18)
+    plt.title("Model Performance Comparison", fontsize=24)
 
     plt.savefig(file_path, format="pdf", bbox_inches="tight")

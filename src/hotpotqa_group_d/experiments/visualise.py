@@ -13,13 +13,13 @@ if __name__ == "__main__":
     large_rag_results = extract_results("large rag", "results/large-model-results.json")
 
     blackmail_template_results = extract_results(
-        "blackmail template", "results/blackmail-prompt-results.json"
+        "blackmail", "results/blackmail-prompt-results.json"
     )
     polite_template_results = extract_results(
-        "polite template", "results/polite-prompt-results.json"
+        "polite", "results/polite-prompt-results.json"
     )
     expert_template_results = extract_results(
-        "expert template", "results/expert-prompt-results.json"
+        "expert", "results/expert-prompt-results.json"
     )
 
     prompt_reasoning_results = extract_results(
@@ -34,10 +34,10 @@ if __name__ == "__main__":
     )
 
     two_step_reflection_results = extract_results(
-        "two step reflection", "results/medium-model-reflection-results.json"
+        "2 step reflection", "results/medium-model-reflection-results.json"
     )
     three_step_reflection_results = extract_results(
-        "three step reflection", "results/medium-model-reflection2-results.json"
+        "3 step reflection", "results/medium-model-reflection2-results.json"
     )
 
     # Plot RAG comparison
